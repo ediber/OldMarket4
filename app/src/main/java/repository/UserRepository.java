@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import model.Users;
 
-//import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.CollectionReference;
 //import com.google.firebase.firestore.FirebaseFirestore;
 //import com.google.firebase.firestore.DocumentReference;
 //import com.google.firebase.firestore.QuerySnapshot;
@@ -17,30 +17,35 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.OnFailureListener;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import model.User;  // Make sure this points to the correct User model class
 
 
 public class UserRepository {
-  //  public CollectionReference collection;
-  //  private FirebaseFirestore db;
+    public CollectionReference collection;
+    private FirebaseFirestore db;
     private final MutableLiveData<Users> UserLiveData;
     public UserRepository(Context context)
     {
         try {
-       //     db = FirebaseFirestore.getInstance();
+            db = FirebaseFirestore.getInstance();
         }
         catch (Exception e){
             FirebaseInstance instance = FirebaseInstance.instance(context);
 
-    //        db = FirebaseFirestore.getInstance(FirebaseInstance.app);
+            db = FirebaseFirestore.getInstance(FirebaseInstance.app);
         }
 
-    //    collection = db.collection("Users");
+        collection = db.collection("Users");
         UserLiveData = new MutableLiveData<>();
     }
     public Task<Boolean> add (User user)
     {
-/*        TaskCompletionSource<Boolean> taskCompletion = new TaskCompletionSource<Boolean>();
+        TaskCompletionSource<Boolean> taskCompletion = new TaskCompletionSource<Boolean>();
         DocumentReference document = collection.document();
 
        user.setIdFs(document.getId());
@@ -59,12 +64,11 @@ public class UserRepository {
                         taskCompletion.setResult(false);
                     }
                 });
-        return taskCompletion.getTask();*/
-        return null;
+        return taskCompletion.getTask();
     }
 
     public Task<User> signIn(String userName, String password){
-/*        TaskCompletionSource<User> taskUser = new TaskCompletionSource<>();
+        TaskCompletionSource<User> taskUser = new TaskCompletionSource<>();
 
         Users users = new Users();
 
@@ -91,9 +95,9 @@ public class UserRepository {
                         taskUser.setResult(null);
                     }
                 });
-        return taskUser.getTask();*/
+        return taskUser.getTask();
 
-        return null;
+    //    return null;
     }
 
 

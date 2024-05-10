@@ -36,22 +36,30 @@ android {
 
 dependencies {
 
+    // Implementation dependencies
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
     implementation(libs.activity)
+    implementation(libs.firebase.firestore)
+
+    // Test dependencies
     testImplementation(libs.junit)
+
+    // Android instrumentation test dependencies
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
-//    implementation("androidx.appcompat:appcompat:1.6.1")
-//    implementation("com.google.android.material:material:1.11.0")
-//    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    // Firebase dependencies
     implementation("com.google.firebase:firebase-auth:22.3.1")
     implementation("com.google.firebase:firebase-database:20.3.1")
-//    implementation(project(":Model"))
-//    implementation(project(":ViewMudel"))
+    implementation("com.google.firebase:firebase-firestore-ktx:25.0.0") // Corrected version
+
+
+    // Remove any separate non-KTX Firestore dependency if present
+    // implementation "com.google.firebase:firebase-firestore:25.0.0" // This line should be removed if using the KTX version
+
 
 }
