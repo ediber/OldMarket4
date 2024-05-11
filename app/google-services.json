@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "157673200851",
+    "project_id": "oldmarket-5e6fc",
+    "storage_bucket": "oldmarket-5e6fc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:157673200851:android:c819f4dd631b55bfc20826",
+        "android_client_info": {
+          "package_name": "com.example.oldmarket"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDe6QBDnPIZUkoKflvJZtuZYTcxaqNHyHY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

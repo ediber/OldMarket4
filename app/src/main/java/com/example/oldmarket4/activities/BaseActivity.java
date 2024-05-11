@@ -17,7 +17,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base);
+        //setContentView(R.layout.activity_base);
     }
 
     protected abstract void InitializeViews();

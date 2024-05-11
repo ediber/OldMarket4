@@ -1,7 +1,7 @@
 package com.example.oldmarket4.activities;
 
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
@@ -62,8 +62,7 @@ public class SignUpActivity extends BaseActivity {
                 //........//
 
                 viewModel.add(user);
-                Intent intent=new Intent(SignUpActivity.this,SignInActivity.class);
-                startActivity(intent);
+
             }
 
 
@@ -73,5 +72,13 @@ public class SignUpActivity extends BaseActivity {
 
     private  void setObservers(){
         viewModel = new ViewModelProvider(this).get(UserViewModel.class);
+
+        viewModel.getSuccessOperation().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                Intent intent=new Intent(SignUpActivity.this,SignInActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

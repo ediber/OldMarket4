@@ -49,6 +49,8 @@ public class SignInActivity extends BaseActivity {
             @Override
             public void onChanged(User user) {
                 BaseActivity.currentUser = user;
+                Intent intent = new Intent(SignInActivity.this, ProductsActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -61,10 +63,6 @@ public class SignInActivity extends BaseActivity {
                                         @Override
                                         public void onClick(View v) {
                                             viewModel.SignIn(etUserName.getText().toString(), etSisma.getText().toString());
-
-                                            Intent intent = new Intent(SignInActivity.this,ProductsActivity.class);
-                                            startActivity(intent);
-
                                         }
                                     }
         );
