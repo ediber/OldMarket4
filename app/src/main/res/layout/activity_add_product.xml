@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ACTIVITIES.ProductActivity">
+    tools:context=".activities.AddProductActivity">
 
     <TextView
         android:id="@+id/textView6"
@@ -72,7 +72,7 @@
         app:layout_constraintTop_toBottomOf="@+id/etProductDescripion" />
 
     <Button
-        android:id="@+id/btnProduct"
+        android:id="@+id/btnSaveProduct"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="save"
@@ -83,14 +83,11 @@
         app:layout_constraintVertical_bias="0.702" />
 
     <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/etProductName1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.219"
-        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/imageViewPhoto"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:layout_constraintStart_toStartOf="@+id/textView6"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
-        app:layout_constraintVertical_bias="0.0"
-        tools:srcCompat="@tools:sample/avatars" />
+        android:src="@drawable/ic_launcher_foreground"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

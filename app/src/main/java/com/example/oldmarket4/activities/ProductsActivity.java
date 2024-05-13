@@ -4,11 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -42,7 +37,7 @@ public class ProductsActivity extends BaseActivity {
         fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ProductsActivity.this, ProductActivity.class);
+                Intent intent = new Intent(ProductsActivity.this, AddProductActivity.class);
                 startActivity(intent);
             }
         });

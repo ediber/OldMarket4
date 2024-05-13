@@ -36,6 +36,9 @@
         <activity
             android:name=".activities.SignInActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.AddProductActivity"
+            android:exported="false" />
 
     </application>
 
