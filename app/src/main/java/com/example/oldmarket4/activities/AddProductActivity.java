@@ -118,7 +118,12 @@ public class AddProductActivity extends BaseActivity {
                 .addOnSuccessListener(documentReference -> {
                     Log.d("Firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
                     Toast.makeText(AddProductActivity.this, "Product saved successfully!", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(AddProductActivity.this, ProductsActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
                 })
+
                 .addOnFailureListener(e -> {
                     Log.w("Firebase", "Error adding document", e);
                     Toast.makeText(AddProductActivity.this, "Error saving product", Toast.LENGTH_SHORT).show();
