@@ -6,9 +6,11 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
@@ -19,15 +21,21 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.oldmarket4.R;
 
+import java.util.HashMap;
+import java.util.Map;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+
 
 public class AddProductActivity extends BaseActivity {
     private ImageView photo;
     private EditText nameView;
     private EditText desView;
-
     private EditText  QuaWiew;
     private  View saveView;
     private EditText changView;
+    private FirebaseFirestore db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +49,7 @@ public class AddProductActivity extends BaseActivity {
         });
         InitializeViews();
         setListeners();
+        db = FirebaseFirestore.getInstance();
     }
 
     @Override
@@ -91,8 +100,30 @@ public class AddProductActivity extends BaseActivity {
                 String name = nameView.getText().toString();
                 String des = desView.getText().toString();
                 String qua = QuaWiew.getText().toString();
+                String change = changView.getText().toString();
+                saveProductToFirestore(name, des, qua,change);
             }
         });
+    }
+
+    private void saveProductToFirestore(String name, String description, String quantity,String change) {
+        Map<String, Object> product = new HashMap<>();
+        product.put("name", name);
+        product.put("description", description);
+        product.put("quantity", quantity);
+        product.put("change", change);
+        // Add a new document with a generated ID
+        db.collection("products")
+                .add(product)
+                .addOnSuccessListener(documentReference -> {
+                    Log.d("Firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
+                    Toast.makeText(AddProductActivity.this, "Product saved successfully!", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("Firebase", "Error adding document", e);
+                    Toast.makeText(AddProductActivity.this, "Error saving product", Toast.LENGTH_SHORT).show();
+                });
+
     }
 
     @Override
