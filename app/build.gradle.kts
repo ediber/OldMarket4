@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.navigation.ui)
     implementation(libs.activity)
     implementation(libs.firebase.firestore)
+    implementation(libs.media3.common)
 
     // Test dependencies
     testImplementation(libs.junit)

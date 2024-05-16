@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,9 +49,11 @@ public class SignInActivity extends BaseActivity {
         viewModel.getMuteUser().observe(this, new Observer<User>() {
             @Override
             public void onChanged(User user) {
-                BaseActivity.currentUser = user;
-                Intent intent = new Intent(SignInActivity.this, ProductsActivity.class);
-                startActivity(intent);
+                if (user != null) {
+                    BaseActivity.currentUser = user;
+                    Intent intent = new Intent(SignInActivity.this, ProductsActivity.class);
+                    startActivity(intent);
+                }
             }
         });
     }
