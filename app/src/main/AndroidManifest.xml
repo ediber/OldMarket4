@@ -13,6 +13,9 @@
         android:theme="@style/Theme.OldMarket4"
         tools:targetApi="31">
         <activity
+            android:name=".activities.ProductDescriptionActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.BaseActivity"
             android:exported="false" />
         <activity
@@ -25,11 +28,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activities.ProductsActivity"
             android:exported="false" />
-
         <activity
             android:name=".activities.SignUpActivity"
             android:exported="false" />
@@ -39,7 +40,6 @@
         <activity
             android:name=".activities.AddProductActivity"
             android:exported="false" />
-
     </application>
 
 </manifest>

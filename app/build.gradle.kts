@@ -57,9 +57,8 @@ dependencies {
     implementation("com.google.firebase:firebase-database:20.3.1")
     implementation("com.google.firebase:firebase-firestore-ktx:25.0.0") // Corrected version
 
-
-    // Remove any separate non-KTX Firestore dependency if present
-    // implementation "com.google.firebase:firebase-firestore:25.0.0" // This line should be removed if using the KTX version
-
+    // Glide, image loading
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
 }

@@ -59,7 +59,17 @@ public class ProductsActivity extends BaseActivity {
         fabAdd = findViewById(R.id.fabAdd);
 
         // Setting up the RecyclerView and Adapter
-        adapter = new ProductAdapter(productList);
+        adapter = new ProductAdapter(productList, new ProductAdapter.OnItemLongClickListener() {
+            @Override
+            public void onItemLongClick(int position) {
+                // Handle the long click event
+                Product product = productList.get(position);
+                // Start ProductDescriptionActivity with the product ID
+                Intent intent = new Intent(ProductsActivity.this, ProductDescriptionActivity.class);
+                intent.putExtra("productId", product.getId());
+                startActivity(intent);
+            }
+        });
         rvProducts.setAdapter(adapter);
         rvProducts.setLayoutManager(new LinearLayoutManager(this));
         rvProducts.setHasFixedSize(true);

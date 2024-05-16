@@ -15,9 +15,15 @@ import model.Product;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
     private List<Product> productList;
+    private OnItemLongClickListener longClickListener;
 
-    public ProductAdapter(List<Product> productList) {
+    public interface OnItemLongClickListener {
+        void onItemLongClick(int position);
+    }
+
+    public ProductAdapter(List<Product> productList, OnItemLongClickListener longClickListener) {
         this.productList = productList;
+        this.longClickListener = longClickListener;
     }
 
     @NonNull
@@ -32,7 +38,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         Product product = productList.get(position);
         holder.tvName.setText(product.getName());
         holder.tvDescription.setText(product.getDescription());
-        // More bindings if necessary
     }
 
     @Override
@@ -40,14 +45,24 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         return productList.size();
     }
 
-    static class ProductViewHolder extends RecyclerView.ViewHolder {
+    class ProductViewHolder extends RecyclerView.ViewHolder {
         TextView tvName, tvDescription;
 
         ProductViewHolder(View view) {
             super(view);
             tvName = view.findViewById(R.id.tvProductName);
             tvDescription = view.findViewById(R.id.tvProductDescription);
+
+            view.setOnLongClickListener(v -> {
+                if (longClickListener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        longClickListener.onItemLongClick(position);
+                        return true;
+                    }
+                }
+                return false;
+            });
         }
     }
 }
-
