@@ -101,17 +101,18 @@ public class AddProductActivity extends BaseActivity {
                 String des = desView.getText().toString();
                 String qua = QuaWiew.getText().toString();
                 String change = changView.getText().toString();
-                saveProductToFirestore(name, des, qua,change);
+                saveProductToFirestore(name, des, qua,change, currentUser.getIdFs());
             }
         });
     }
 
-    private void saveProductToFirestore(String name, String description, String quantity,String change) {
+    private void saveProductToFirestore(String name, String description, String quantity,String change, String idFs) {
         Map<String, Object> product = new HashMap<>();
         product.put("name", name);
         product.put("description", description);
         product.put("quantity", quantity);
         product.put("change", change);
+        product.put("userId", idFs);
         // Add a new document with a generated ID
         db.collection("products")
                 .add(product)

@@ -8,14 +8,13 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
 import com.example.oldmarket4.R;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import model.Product;
 
-public class ProductDescriptionActivity extends AppCompatActivity {
+public class ProductDescriptionActivity extends BaseActivity {
     private FirebaseFirestore db;
     private TextView tvProductName, tvProductDescription, tvProductQuantity, tvProductChange;
     private ImageView ivProductImage;
@@ -28,23 +27,33 @@ public class ProductDescriptionActivity extends AppCompatActivity {
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
 
-        // Initialize Views
-        tvProductName = findViewById(R.id.tvProductName);
-        tvProductDescription = findViewById(R.id.tvProductDescription);
-        tvProductQuantity = findViewById(R.id.tvProductQuantity);
-        tvProductChange = findViewById(R.id.tvProductChange);
-        ivProductImage = findViewById(R.id.ivProductImage);
+        InitializeViews();
 
         // Get Product ID from Intent
         String productId = getIntent().getStringExtra("productId");
 
         // Fetch product details from Firestore
         if (productId != null) {
-            fetchProductDetails(productId);
+            fetchMyProductDetails(productId);
         }
     }
 
-    private void fetchProductDetails(String productId) {
+    @Override
+    protected void InitializeViews() {
+        // Initialize Views
+        tvProductName = findViewById(R.id.tvProductName);
+        tvProductDescription = findViewById(R.id.tvProductDescription);
+        tvProductQuantity = findViewById(R.id.tvProductQuantity);
+        tvProductChange = findViewById(R.id.tvProductChange);
+        ivProductImage = findViewById(R.id.ivProductImage);
+    }
+
+    @Override
+    protected void setListeners() {
+
+    }
+
+    private void fetchMyProductDetails(String productId) {
         DocumentReference docRef = db.collection("products").document(productId);
         docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {

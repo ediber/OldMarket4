@@ -43,7 +43,7 @@ public class ProductsActivity extends BaseActivity {
                 productList.clear();
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     Product product = document.toObject(Product.class);
-                    product.setId(document.getId());
+                    product.setProductId(document.getId());
                     productList.add(product);
                 }
                 adapter.notifyDataSetChanged();
@@ -66,7 +66,7 @@ public class ProductsActivity extends BaseActivity {
                 Product product = productList.get(position);
                 // Start ProductDescriptionActivity with the product ID
                 Intent intent = new Intent(ProductsActivity.this, ProductDescriptionActivity.class);
-                intent.putExtra("productId", product.getId());
+                intent.putExtra("productId", product.getProductId());
                 startActivity(intent);
             }
         });
