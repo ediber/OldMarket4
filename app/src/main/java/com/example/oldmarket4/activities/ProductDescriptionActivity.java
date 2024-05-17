@@ -18,7 +18,7 @@ import model.Product;
 
 public class ProductDescriptionActivity extends BaseActivity {
     private FirebaseFirestore db;
-    private TextView tvProductName, tvProductDescription, tvProductQuantity, tvProductChange, tvIsMyUser;
+    private TextView tvProductName, tvProductDescription, tvProductQuantity, tvProductChange, tvIsMyUser, tvPhoneNumber;
     private ImageView ivProductImage;
     private EditText etPhoneNumber;
     private Button btnAddPhoneNumber;
@@ -41,13 +41,15 @@ public class ProductDescriptionActivity extends BaseActivity {
         // Display isMyUser in TextView
         tvIsMyUser.setText("Is My User: " + isMyUser);
 
-        // Show or hide the button and EditText based on isMyUser
+        // Show or hide the button, EditText, and phone number TextView based on isMyUser
         if (isMyUser) {
             btnAddPhoneNumber.setVisibility(View.GONE);
             etPhoneNumber.setVisibility(View.GONE);
+            tvPhoneNumber.setVisibility(View.VISIBLE);
         } else {
             btnAddPhoneNumber.setVisibility(View.VISIBLE);
             etPhoneNumber.setVisibility(View.VISIBLE);
+            tvPhoneNumber.setVisibility(View.GONE);
         }
 
         // Fetch product details from Firestore
@@ -67,6 +69,7 @@ public class ProductDescriptionActivity extends BaseActivity {
         tvProductChange = findViewById(R.id.tvProductChange);
         ivProductImage = findViewById(R.id.ivProductImage);
         tvIsMyUser = findViewById(R.id.tvIsMyUser);
+        tvPhoneNumber = findViewById(R.id.tvPhoneNumber);
         etPhoneNumber = findViewById(R.id.etPhoneNumber);
         btnAddPhoneNumber = findViewById(R.id.btnAddPhoneNumber);
     }
@@ -92,6 +95,10 @@ public class ProductDescriptionActivity extends BaseActivity {
                     tvProductDescription.setText(product.getDescription());
                     tvProductQuantity.setText("Quantity: " + product.getQuantity());
                     tvProductChange.setText("Change: " + product.getChange());
+
+                    if (isMyUser && product.getPhoneNumber() != null) {
+                        tvPhoneNumber.setText("Phone Number: " + product.getPhoneNumber());
+                    }
 
                     // Load image using Glide (commented out)
                     // if (product.getImageUrl() != null && !product.getImageUrl().isEmpty()) {

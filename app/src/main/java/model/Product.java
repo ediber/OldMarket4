@@ -8,6 +8,7 @@ public class Product {
     private int quantity;
     private String change;
     private String imageUrl; // Optional based on your Firestore structure
+    private String phoneNumber; // Add phoneNumber field
 
     public Product() {
         // Firestore Data Model classes need a public no-argument constructor
@@ -31,4 +32,6 @@ public class Product {
     public void setUserId(String user_id) { this.user_id = user_id; }
     public String getProductId() { return productId; }
     public void setProductId(String productId) { this.productId = productId; }
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 }
