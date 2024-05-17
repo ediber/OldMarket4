@@ -45,6 +45,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.firebase.firestore)
     implementation(libs.media3.common)
+    implementation(libs.play.services.location)
 
     // Test dependencies
     testImplementation(libs.junit)
