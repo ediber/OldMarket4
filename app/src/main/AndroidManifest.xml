@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.oldmarket4">
 
     <application
         android:allowBackup="true"
@@ -12,6 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OldMarket4"
         tools:targetApi="31">
+
         <activity
             android:name=".activities.ProductDescriptionActivity"
             android:exported="false" />
@@ -24,7 +26,6 @@
             android:theme="@style/Theme.OldMarket4">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -40,6 +41,14 @@
         <activity
             android:name=".activities.AddProductActivity"
             android:exported="false" />
+
+        <!-- Declare the MusicService -->
+        <service android:name="service.MusicService" />
+
     </application>
+
+    <!-- Add permissions -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
 </manifest>

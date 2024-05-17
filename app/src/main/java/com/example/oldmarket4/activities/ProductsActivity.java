@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.oldmarket4.R;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Product;
+import service.MusicService;
 
 public class ProductsActivity extends BaseActivity {
     private FirebaseFirestore db;
@@ -26,6 +27,8 @@ public class ProductsActivity extends BaseActivity {
     private FloatingActionButton fabAdd;
     private Button btnFilterByUserId;
     private Button btnFilterNotByUserId;
+    private Button btnStartMusic;
+    private Button btnStopMusic;
     private ProductAdapter adapter;
     private List<Product> productList = new ArrayList<>();
     private boolean isMyUser = false;
@@ -85,6 +88,8 @@ public class ProductsActivity extends BaseActivity {
         fabAdd = findViewById(R.id.fabAdd);
         btnFilterByUserId = findViewById(R.id.btnFilterByUserId);
         btnFilterNotByUserId = findViewById(R.id.btnFilterNotByUserId);
+        btnStartMusic = findViewById(R.id.btnStartMusic);
+        btnStopMusic = findViewById(R.id.btnStopMusic);
 
         // Setting up the RecyclerView and Adapter
         adapter = new ProductAdapter(productList, new ProductAdapter.OnItemLongClickListener() {
@@ -129,6 +134,20 @@ public class ProductsActivity extends BaseActivity {
             public void onClick(View v) {
                 isMyUser = false;
                 fetchDataByUserId(false);
+            }
+        });
+
+        btnStartMusic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startService(new Intent(ProductsActivity.this, MusicService.class));
+            }
+        });
+
+        btnStopMusic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopService(new Intent(ProductsActivity.this, MusicService.class));
             }
         });
     }
