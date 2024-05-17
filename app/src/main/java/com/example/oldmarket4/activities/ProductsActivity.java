@@ -28,6 +28,7 @@ public class ProductsActivity extends BaseActivity {
     private Button btnFilterNotByUserId;
     private ProductAdapter adapter;
     private List<Product> productList = new ArrayList<>();
+    private boolean isMyUser = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +95,7 @@ public class ProductsActivity extends BaseActivity {
                 // Start ProductDescriptionActivity with the product ID
                 Intent intent = new Intent(ProductsActivity.this, ProductDescriptionActivity.class);
                 intent.putExtra("productId", product.getProductId());
+                intent.putExtra("isMyUser", isMyUser);
                 startActivity(intent);
             }
         });
@@ -117,6 +119,7 @@ public class ProductsActivity extends BaseActivity {
         btnFilterByUserId.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isMyUser = true;
                 fetchDataByUserId(true);
             }
         });
@@ -124,6 +127,7 @@ public class ProductsActivity extends BaseActivity {
         btnFilterNotByUserId.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isMyUser = false;
                 fetchDataByUserId(false);
             }
         });
