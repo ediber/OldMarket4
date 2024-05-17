@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ACTIVITIES.ProductsActivity">
+    tools:context=".activities.ProductsActivity">
 
     <TextView
         android:id="@+id/textView2"
@@ -22,12 +22,16 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvProducts"
-        android:layout_width="354dp"
-        android:layout_height="563dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="28dp"
         android:layout_marginTop="28dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="100dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/fabAdd" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAdd"
@@ -39,4 +43,33 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_input_add" />
+
+    <Button
+        android:id="@+id/btnFilterByUserId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Filter by User ID"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnFilterNotByUserId"
+        app:layout_constraintTop_toBottomOf="@+id/rvProducts"
+        app:layout_constraintHorizontal_bias="0.5"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/btnFilterNotByUserId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Filter Not by User ID"
+        app:layout_constraintStart_toEndOf="@+id/btnFilterByUserId"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rvProducts"
+        app:layout_constraintHorizontal_bias="0.5"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
