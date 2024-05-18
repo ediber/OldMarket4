@@ -59,7 +59,7 @@ public class AddProductActivity extends BaseActivity {
         desView  = findViewById(R.id.etProductDescripion);
         QuaWiew  = findViewById(R.id.etProductQuantity);
         saveView  = findViewById(R.id.btnSaveProduct);
-        changView  = findViewById(R.id.etProductQuantity);
+        changView  = findViewById(R.id.etProductChange);
     }
 
     @Override
