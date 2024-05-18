@@ -5,8 +5,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
-import model.Users;
-
 import com.google.firebase.firestore.CollectionReference;
 //import com.google.firebase.firestore.FirebaseFirestore;
 //import com.google.firebase.firestore.DocumentReference;
@@ -28,7 +26,7 @@ import model.User;  // Make sure this points to the correct User model class
 public class UserRepository {
     public CollectionReference collection;
     private FirebaseFirestore db;
-    private final MutableLiveData<Users> UserLiveData;
+
     public UserRepository(Context context)
     {
         try {
@@ -41,7 +39,6 @@ public class UserRepository {
         }
 
         collection = db.collection("Users");
-        UserLiveData = new MutableLiveData<>();
     }
     public Task<Boolean> add (User user)
     {
@@ -70,7 +67,6 @@ public class UserRepository {
     public Task<User> signIn(String userName, String password){
         TaskCompletionSource<User> taskUser = new TaskCompletionSource<>();
 
-        Users users = new Users();
 
         collection.whereEqualTo("email", userName).whereEqualTo("password", password).get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {

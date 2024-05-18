@@ -4,18 +4,14 @@ import android.app.Application;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.OptIn;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.media3.common.util.Log;
-import androidx.media3.common.util.UnstableApi;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import model.User;
-import model.Users;
 import repository.UserRepository;
 
 
@@ -25,14 +21,13 @@ public class UserViewModel extends AndroidViewModel
     private Context context;
     private static UserRepository repository;
     private MutableLiveData<User> muteUser;
-    private MutableLiveData<Users> blogPostsLiveDAta;
+
 
     public UserViewModel(Application application)
     {
         super(application);
         repository= new UserRepository(application);
         successOperation = new MutableLiveData<>();
-        blogPostsLiveDAta = new MutableLiveData<>();
         muteUser = new MutableLiveData<>();
     }
 
