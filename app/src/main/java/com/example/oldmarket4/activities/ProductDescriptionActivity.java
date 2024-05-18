@@ -7,9 +7,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.Nullable;
-
+import com.bumptech.glide.Glide;
 import com.example.oldmarket4.R;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -100,10 +99,10 @@ public class ProductDescriptionActivity extends BaseActivity {
                         tvPhoneNumber.setText("Phone Number: " + product.getPhoneNumber());
                     }
 
-                    // Load image using Glide (commented out)
-                    // if (product.getImageUrl() != null && !product.getImageUrl().isEmpty()) {
-                    //     Glide.with(this).load(product.getImageUrl()).into(ivProductImage);
-                    // }
+                    // Load image using Glide
+                    if (product.getImageUrl() != null && !product.getImageUrl().isEmpty()) {
+                        Glide.with(this).load(product.getImageUrl()).into(ivProductImage);
+                    }
                 }
             } else {
                 Log.d("Firestore", "Error getting product details: ", task.getException());

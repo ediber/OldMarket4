@@ -58,6 +58,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:22.3.1")
     implementation("com.google.firebase:firebase-database:20.3.1")
     implementation("com.google.firebase:firebase-firestore-ktx:25.0.0") // Corrected version
+    implementation("com.google.firebase:firebase-storage:20.2.0")
 
     // Glide, image loading
     implementation("com.github.bumptech.glide:glide:4.12.0")
