@@ -45,7 +45,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.firebase.firestore)
     implementation(libs.media3.common)
-    implementation(libs.play.services.location)
+    implementation("com.google.android.gms:play-services-location:21.0.1") // Corrected dependency
 
     // Test dependencies
     testImplementation(libs.junit)
