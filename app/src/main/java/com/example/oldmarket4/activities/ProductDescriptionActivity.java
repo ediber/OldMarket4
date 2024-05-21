@@ -132,6 +132,8 @@ public class ProductDescriptionActivity extends BaseActivity {
 
     private void offerChange() {
         Intent intent = new Intent(ProductDescriptionActivity.this, ChangeActivity.class);
+        intent.putExtra("productId", getIntent().getStringExtra("productId")); // Pass current product ID
+        intent.putExtra("isMyUser", isMyUser); // Pass isMyUser
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();

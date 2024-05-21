@@ -2,6 +2,7 @@ package com.example.oldmarket4.activities;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.core.graphics.Insets;
@@ -27,6 +28,7 @@ public class ChangeActivity extends BaseActivity {
     private ChangeProductAdapter productAdapter;
     private List<Product> productList;
     private FirebaseFirestore db;
+    private String productId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +45,13 @@ public class ChangeActivity extends BaseActivity {
         setListeners();
 
         db = FirebaseFirestore.getInstance();
-        fetchProducts();
+
+        boolean isMyUser = getIntent().getBooleanExtra("isMyUser", false); // Retrieve isMyUser
+        productId = getIntent().getStringExtra("productId"); // Retrieve productId
+
+        if(! isMyUser){ // if the original product is not mine the exchange products are mine
+            fetchMyProducts();
+        }
     }
 
     @Override
@@ -51,7 +59,12 @@ public class ChangeActivity extends BaseActivity {
         recyclerViewProducts = findViewById(R.id.recyclerViewProducts);
         recyclerViewProducts.setLayoutManager(new LinearLayoutManager(this));
         productList = new ArrayList<>();
-        productAdapter = new ChangeProductAdapter(productList, this::addProductToList);
+        productAdapter = new ChangeProductAdapter(productList, new ChangeProductAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(String productId) {
+                addProductToList(productId);
+            }
+        });
         recyclerViewProducts.setAdapter(productAdapter);
     }
 
@@ -60,31 +73,39 @@ public class ChangeActivity extends BaseActivity {
         // No additional listeners needed
     }
 
-    private void fetchProducts() {
-        db.collection("products")
-                .whereEqualTo("userId", currentUser.getIdFs()) // Filter by user ID
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Product product = document.toObject(Product.class);
-                            product.setProductId(document.getId());
-                            productList.add(product);
+    private void fetchMyProducts() {
+            db.collection("products")
+                    .whereEqualTo("userId", currentUser.getIdFs()) // Adjust according to your implementation
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            productList.clear();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Product product = document.toObject(Product.class);
+                                product.setProductId(document.getId());
+                                productList.add(product);
+                            }
+                            productAdapter.notifyDataSetChanged();
+                        } else {
+                            Log.d("Firestore", "Error getting documents: ", task.getException());
                         }
-                        productAdapter.notifyDataSetChanged();
-                    } else {
-                        Log.d("Firestore", "Error getting documents: ", task.getException());
-                    }
-                });
+                    });
     }
 
-    private void addProductToList(Product product) {
+    private void addProductToList(String productIdToChange) {
         String currentProductId = getIntent().getStringExtra("productId");
         if (currentProductId != null) {
             db.collection("products").document(currentProductId)
-                    .update("relatedProductIds", FieldValue.arrayUnion(product.getProductId()))
-                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Product ID added successfully"))
-                    .addOnFailureListener(e -> Log.d("Firestore", "Error adding product ID", e));
+                    .update("relatedProductIds", FieldValue.arrayUnion(productIdToChange))
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("Firestore", "Product ID added successfully");
+                        Toast.makeText(ChangeActivity.this, "Product ID added successfully!", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w("Firestore", "Error adding product ID", e);
+                        Toast.makeText(ChangeActivity.this, "Error adding product ID", Toast.LENGTH_SHORT).show();
+                    });
         }
     }
+
 }
