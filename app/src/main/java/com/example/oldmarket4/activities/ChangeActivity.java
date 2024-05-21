@@ -1,5 +1,6 @@
 package com.example.oldmarket4.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -93,19 +94,12 @@ public class ChangeActivity extends BaseActivity {
     }
 
     private void addProductToList(String productIdToChange) {
+
         String currentProductId = getIntent().getStringExtra("productId");
-        if (currentProductId != null) {
-            db.collection("products").document(currentProductId)
-                    .update("relatedProductIds", FieldValue.arrayUnion(productIdToChange))
-                    .addOnSuccessListener(aVoid -> {
-                        Log.d("Firestore", "Product ID added successfully");
-                        Toast.makeText(ChangeActivity.this, "Product ID added successfully!", Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.w("Firestore", "Error adding product ID", e);
-                        Toast.makeText(ChangeActivity.this, "Error adding product ID", Toast.LENGTH_SHORT).show();
-                    });
-        }
+        Intent intent = new Intent(ChangeActivity.this, ChangeProductDescriptionActivity.class);
+        intent.putExtra("currentProductId", currentProductId);
+        intent.putExtra("productIdToChange", productIdToChange);
+        startActivity(intent);
     }
 
 }

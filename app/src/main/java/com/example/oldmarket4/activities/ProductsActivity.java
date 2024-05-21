@@ -98,7 +98,7 @@ public class ProductsActivity extends BaseActivity {
                 // Handle the long click event
                 Product product = productList.get(position);
                 // Start ProductDescriptionActivity with the product ID
-                Intent intent = new Intent(ProductsActivity.this, ProductDescriptionActivity.class);
+                Intent intent = new Intent(ProductsActivity.this, ShowProductDescriptionActivity.class);
                 intent.putExtra("productId", product.getProductId());
                 intent.putExtra("isMyUser", isMyUser);
                 startActivity(intent);
