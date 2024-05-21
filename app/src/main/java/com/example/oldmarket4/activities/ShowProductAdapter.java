@@ -13,7 +13,7 @@ import java.util.List;
 
 import model.Product;
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
+public class ShowProductAdapter extends RecyclerView.Adapter<ShowProductAdapter.ProductViewHolder> {
     private List<Product> productList;
     private OnItemLongClickListener longClickListener;
 
@@ -21,7 +21,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         void onItemLongClick(int position);
     }
 
-    public ProductAdapter(List<Product> productList, OnItemLongClickListener longClickListener) {
+    public ShowProductAdapter(List<Product> productList, OnItemLongClickListener longClickListener) {
         this.productList = productList;
         this.longClickListener = longClickListener;
     }

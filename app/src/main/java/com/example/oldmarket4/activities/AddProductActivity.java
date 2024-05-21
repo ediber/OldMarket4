@@ -26,8 +26,9 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AddProductActivity extends BaseActivity {
@@ -136,6 +137,8 @@ public class AddProductActivity extends BaseActivity {
     }
 
     private void saveProductToFirestore(String name, String description, String quantity, String change, String userId, String imageUrl) {
+        List<String> relatedProductIds = new ArrayList<>(); // Initialize an empty list
+
         Map<String, Object> product = new HashMap<>();
         product.put("name", name);
         product.put("description", description);
@@ -143,6 +146,7 @@ public class AddProductActivity extends BaseActivity {
         product.put("change", change);
         product.put("userId", userId);
         product.put("imageUrl", imageUrl);
+        product.put("relatedProductIds", relatedProductIds); // Add the empty list to Firestore
 
         db.collection("products")
                 .add(product)

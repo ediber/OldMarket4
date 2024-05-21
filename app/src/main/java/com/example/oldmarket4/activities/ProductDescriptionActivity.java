@@ -1,5 +1,6 @@
 package com.example.oldmarket4.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,7 +21,7 @@ public class ProductDescriptionActivity extends BaseActivity {
     private TextView tvProductName, tvProductDescription, tvProductQuantity, tvProductChange, tvIsMyUser, tvPhoneNumber;
     private ImageView ivProductImage;
     private EditText etPhoneNumber;
-    private Button btnAddPhoneNumber;
+    private Button btnAddPhoneNumber, btnOfferChange;
     private boolean isMyUser;
 
     @Override
@@ -71,6 +72,7 @@ public class ProductDescriptionActivity extends BaseActivity {
         tvPhoneNumber = findViewById(R.id.tvPhoneNumber);
         etPhoneNumber = findViewById(R.id.etPhoneNumber);
         btnAddPhoneNumber = findViewById(R.id.btnAddPhoneNumber);
+        btnOfferChange = findViewById(R.id.btnOfferChange);
     }
 
     @Override
@@ -79,6 +81,13 @@ public class ProductDescriptionActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 addPhoneNumberToProduct();
+            }
+        });
+
+        btnOfferChange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                offerChange();
             }
         });
     }
@@ -119,5 +128,12 @@ public class ProductDescriptionActivity extends BaseActivity {
                     .addOnSuccessListener(aVoid -> Log.d("Firestore", "Phone number added successfully"))
                     .addOnFailureListener(e -> Log.d("Firestore", "Error adding phone number", e));
         }
+    }
+
+    private void offerChange() {
+        Intent intent = new Intent(ProductDescriptionActivity.this, ChangeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 }

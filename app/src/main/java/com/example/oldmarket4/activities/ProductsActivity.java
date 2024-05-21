@@ -29,7 +29,7 @@ public class ProductsActivity extends BaseActivity {
     private Button btnFilterNotByUserId;
     private Button btnStartMusic;
     private Button btnStopMusic;
-    private ProductAdapter adapter;
+    private ShowProductAdapter adapter;
     private List<Product> productList = new ArrayList<>();
     private boolean isMyUser = false;
 
@@ -92,7 +92,7 @@ public class ProductsActivity extends BaseActivity {
         btnStopMusic = findViewById(R.id.btnStopMusic);
 
         // Setting up the RecyclerView and Adapter
-        adapter = new ProductAdapter(productList, new ProductAdapter.OnItemLongClickListener() {
+        adapter = new ShowProductAdapter(productList, new ShowProductAdapter.OnItemLongClickListener() {
             @Override
             public void onItemLongClick(int position) {
                 // Handle the long click event
