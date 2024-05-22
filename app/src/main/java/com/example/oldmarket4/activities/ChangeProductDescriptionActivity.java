@@ -21,15 +21,19 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FieldValue;
 
+import java.util.List;
+
 import model.Product;
 
-public class ChangeProductDescriptionActivity extends AppCompatActivity {
+public class ChangeProductDescriptionActivity extends BaseActivity {
 
     private FirebaseFirestore db;
     private TextView tvProductName, tvProductDescription, tvProductQuantity, tvProductChange;
     private ImageView ivProductImage;
     private Button btnSaveProduct;
     private String currentProductId, productIdToChange;
+    private String isMyUser;
+    private List<String> phoneNumbersList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,13 +49,15 @@ public class ChangeProductDescriptionActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         currentProductId = getIntent().getStringExtra("currentProductId");
         productIdToChange = getIntent().getStringExtra("productIdToChange");
+        isMyUser = getIntent().getStringExtra("isMyUser");
 
         InitializeViews();
         fetchProductDetails();
         setListeners();
     }
 
-    private void InitializeViews() {
+    @Override
+    protected void InitializeViews() {
         tvProductName = findViewById(R.id.tvProductName);
         tvProductDescription = findViewById(R.id.tvProductDescription);
         tvProductQuantity = findViewById(R.id.tvProductQuantity);
@@ -60,7 +66,8 @@ public class ChangeProductDescriptionActivity extends AppCompatActivity {
         btnSaveProduct = findViewById(R.id.btnSaveProduct);
     }
 
-    private void setListeners() {
+    @Override
+    protected void setListeners() {
         btnSaveProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,6 +89,7 @@ public class ChangeProductDescriptionActivity extends AppCompatActivity {
                                 tvProductDescription.setText(product.getDescription());
                                 tvProductQuantity.setText("Quantity: " + product.getQuantity());
                                 tvProductChange.setText("Change: " + product.getChange());
+                                phoneNumbersList = product.getPhoneNumbersList();
 
                                 if (product.getImageUrl() != null && !product.getImageUrl().isEmpty()) {
                                     Glide.with(this).load(product.getImageUrl()).into(ivProductImage);
@@ -114,7 +122,9 @@ public class ChangeProductDescriptionActivity extends AppCompatActivity {
     }
 
     private void updateProductWithRelatedId(DocumentReference docRef) {
-        docRef.update("relatedProductIds", FieldValue.arrayUnion(productIdToChange))
+        phoneNumbersList.add(currentUser.getPhone());
+        docRef.update("relatedProductIds", FieldValue.arrayUnion(productIdToChange),
+                        "phoneNumbersList", phoneNumbersList)
                 .addOnSuccessListener(aVoid -> {
                     Log.d("Firestore", "Product updated successfully");
                     Toast.makeText(ChangeProductDescriptionActivity.this, "Product saved successfully!", Toast.LENGTH_SHORT).show();

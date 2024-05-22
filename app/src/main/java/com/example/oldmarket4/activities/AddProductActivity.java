@@ -139,6 +139,7 @@ public class AddProductActivity extends BaseActivity {
 
     private void saveProductToFirestore(String name, String description, String quantity, String change, String userId, String imageUrl) {
         List<String> relatedProductIds = new ArrayList<>(); // Initialize an empty list
+        List<String> phoneNumbersList = new ArrayList<>(); // Initialize an empty list for phone numbers
         String productId = UUID.randomUUID().toString().substring(0, 5); // Generate a random 5-character string
 
         Map<String, Object> product = new HashMap<>();
@@ -150,6 +151,7 @@ public class AddProductActivity extends BaseActivity {
         product.put("userId", userId);
         product.put("imageUrl", imageUrl);
         product.put("relatedProductIds", relatedProductIds); // Add the empty list to Firestore
+        product.put("phoneNumbersList", phoneNumbersList); // Add the empty list to Firestore
 
         db.collection("products")
                 .add(product)

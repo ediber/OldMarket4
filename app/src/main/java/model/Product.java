@@ -10,7 +10,7 @@ public class Product {
     private int quantity;
     private String change;
     private String imageUrl; // Optional based on your Firestore structure
-    private String phoneNumber; // Add phoneNumber field
+    private List<String> phoneNumbersList; // Change to a list of phone numbers
     private List<String> relatedProductIds; // New field for list of product IDs
 
     public Product() {
@@ -61,11 +61,11 @@ public class Product {
     public void setProductId(String productId) {
         this.productId = productId;
     }
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public List<String> getPhoneNumbersList() {
+        return phoneNumbersList;
     }
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPhoneNumbersList(List<String> phoneNumbersList) {
+        this.phoneNumbersList = phoneNumbersList;
     }
     public List<String> getRelatedProductIds() {
         return relatedProductIds;
