@@ -3,6 +3,7 @@ package com.example.oldmarket4.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -15,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.oldmarket4.R;
 
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -24,19 +24,20 @@ import java.util.List;
 
 import model.Product;
 
-public class ChangeActivity extends BaseActivity {
+public class ChangeProductsActivity extends BaseActivity {
 
     private RecyclerView recyclerViewProducts;
     private ChangeProductAdapter productAdapter;
     private List<Product> productList;
     private FirebaseFirestore db;
     private String productId;
+    private TextView tvHeader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_change);
+        setContentView(R.layout.activity_change_products);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -51,18 +52,19 @@ public class ChangeActivity extends BaseActivity {
         boolean isMyUser = getIntent().getBooleanExtra("isMyUser", false); // Retrieve isMyUser
         productId = getIntent().getStringExtra("productId"); // Retrieve productId
 
-        if(! isMyUser){ // if the original product is not mine the exchange products are mine
+        // Set header text based on isMyUser
+        if (!isMyUser) {
+            tvHeader.setText("My Projects to Offer");
             fetchMyProducts();
-        }
-        else {
+        } else {
+            tvHeader.setText("Projects Offered to Me");
             fetchOthersProducts(); // fetch products that are offered to me
         }
     }
 
-
-
     @Override
     protected void InitializeViews() {
+        tvHeader = findViewById(R.id.tvHeader);
         recyclerViewProducts = findViewById(R.id.recyclerViewProducts);
         recyclerViewProducts.setLayoutManager(new LinearLayoutManager(this));
         productList = new ArrayList<>();
@@ -81,22 +83,21 @@ public class ChangeActivity extends BaseActivity {
     }
 
     private void fetchMyProducts() {
-            db.collection("products")
-                    .whereEqualTo("userId", currentUser.getIdFs()) // Adjust according to your implementation
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            productList.clear();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Product product = document.toObject(Product.class);
-                                //product.setProductId(document.getId());
-                                productList.add(product);
-                            }
-                            productAdapter.notifyDataSetChanged();
-                        } else {
-                            Log.d("Firestore", "Error getting documents: ", task.getException());
+        db.collection("products")
+                .whereEqualTo("userId", currentUser.getIdFs()) // Adjust according to your implementation
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        productList.clear();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Product product = document.toObject(Product.class);
+                            productList.add(product);
                         }
-                    });
+                        productAdapter.notifyDataSetChanged();
+                    } else {
+                        Log.d("Firestore", "Error getting documents: ", task.getException());
+                    }
+                });
     }
 
     private void fetchOthersProducts() {
@@ -133,7 +134,6 @@ public class ChangeActivity extends BaseActivity {
                         productList.clear();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Product product = document.toObject(Product.class);
-                            //product.setProductId(document.getId()); // Manually set the product ID
                             productList.add(product);
                         }
                         productAdapter.notifyDataSetChanged();
@@ -144,12 +144,10 @@ public class ChangeActivity extends BaseActivity {
     }
 
     private void addProductToList(String productIdToChange) {
-
         String currentProductId = productId;
-        Intent intent = new Intent(ChangeActivity.this, ChangeProductDescriptionActivity.class);
+        Intent intent = new Intent(ChangeProductsActivity.this, ChangeProductDescriptionActivity.class);
         intent.putExtra("currentProductId", currentProductId);
         intent.putExtra("productIdToChange", productIdToChange);
         startActivity(intent);
     }
-
 }

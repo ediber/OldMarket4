@@ -22,7 +22,7 @@
             android:name=".activities.ChangeProductDescriptionActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ChangeActivity"
+            android:name=".activities.ChangeProductsActivity"
             android:exported="false" />
         <activity
             android:name=".activities.ShowProductDescriptionActivity"
