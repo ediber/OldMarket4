@@ -32,8 +32,10 @@ public class ChangeProductDescriptionActivity extends BaseActivity {
     private ImageView ivProductImage;
     private Button btnSaveProduct;
     private String currentProductId, productIdToChange;
-    private String isMyUser;
+    private boolean isMyUser;
     private List<String> phoneNumbersList;
+    private TextView tvPhoneNumbers;
+    private int itemPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +51,8 @@ public class ChangeProductDescriptionActivity extends BaseActivity {
         db = FirebaseFirestore.getInstance();
         currentProductId = getIntent().getStringExtra("currentProductId");
         productIdToChange = getIntent().getStringExtra("productIdToChange");
-        isMyUser = getIntent().getStringExtra("isMyUser");
+        isMyUser = getIntent().getBooleanExtra("isMyUser", false);
+        itemPosition = getIntent().getIntExtra("itemPosition", -1); // position of product selected
 
         InitializeViews();
         fetchProductDetails();
@@ -64,6 +67,14 @@ public class ChangeProductDescriptionActivity extends BaseActivity {
         tvProductChange = findViewById(R.id.tvProductChange);
         ivProductImage = findViewById(R.id.ivProductImage);
         btnSaveProduct = findViewById(R.id.btnSaveProduct);
+        tvPhoneNumbers = findViewById(R.id.tvPhoneNumbers);
+
+
+        if (isMyUser) {
+            btnSaveProduct.setVisibility(View.GONE);
+        } else {
+            tvPhoneNumbers.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -71,7 +82,9 @@ public class ChangeProductDescriptionActivity extends BaseActivity {
         btnSaveProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveProductDetails();
+                if(! isMyUser){
+                    saveProductDetails();
+                }
             }
         });
     }
@@ -93,6 +106,11 @@ public class ChangeProductDescriptionActivity extends BaseActivity {
 
                                 if (product.getImageUrl() != null && !product.getImageUrl().isEmpty()) {
                                     Glide.with(this).load(product.getImageUrl()).into(ivProductImage);
+                                }
+
+                                if (isMyUser) {
+                                    String phoneNumber = phoneNumbersList.get(itemPosition);
+                                    tvPhoneNumbers.setText(phoneNumber);
                                 }
                             }
                         } else {

@@ -18,7 +18,7 @@ import model.Product;
 public class ChangeProductAdapter extends RecyclerView.Adapter<ChangeProductAdapter.ProductViewHolder> {
 
     public interface OnItemClickListener {
-        void onItemClick(String productId);
+        void onItemClick(String productId, int position);
     }
     private List<Product> products;
     private OnItemClickListener listener;
@@ -38,7 +38,7 @@ public class ChangeProductAdapter extends RecyclerView.Adapter<ChangeProductAdap
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         Product product = products.get(position);
-        holder.bind(product, listener);
+        holder.bind(product, listener, position);
     }
 
     @Override
@@ -57,10 +57,10 @@ public class ChangeProductAdapter extends RecyclerView.Adapter<ChangeProductAdap
             tvDescription = itemView.findViewById(R.id.tvProductDescription);
         }
 
-        public void bind(final Product product, final OnItemClickListener listener) {
+        public void bind(final Product product, final OnItemClickListener listener, int position) {
             tvName.setText(product.getName());
             tvDescription.setText(product.getDescription());
-            itemView.setOnClickListener(v -> listener.onItemClick(product.getProductId()));
+            itemView.setOnClickListener(v -> listener.onItemClick(product.getProductId(), position));
         }
     }
 }

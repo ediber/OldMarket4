@@ -32,6 +32,7 @@ public class ChangeProductsActivity extends BaseActivity {
     private FirebaseFirestore db;
     private String productId;
     private TextView tvHeader;
+    private boolean isMyUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,7 @@ public class ChangeProductsActivity extends BaseActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        boolean isMyUser = getIntent().getBooleanExtra("isMyUser", false); // Retrieve isMyUser
+        isMyUser = getIntent().getBooleanExtra("isMyUser", false); // Retrieve isMyUser
         productId = getIntent().getStringExtra("productId"); // Retrieve productId
 
         // Set header text based on isMyUser
@@ -70,8 +71,8 @@ public class ChangeProductsActivity extends BaseActivity {
         productList = new ArrayList<>();
         productAdapter = new ChangeProductAdapter(productList, new ChangeProductAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(String productId) {
-                addProductToList(productId);
+            public void onItemClick(String productId, int position) {
+                goToDescriptionActivity(productId, position);
             }
         });
         recyclerViewProducts.setAdapter(productAdapter);
@@ -143,11 +144,13 @@ public class ChangeProductsActivity extends BaseActivity {
                 });
     }
 
-    private void addProductToList(String productIdToChange) {
+    private void goToDescriptionActivity(String productIdToChange, int position) {
         String currentProductId = productId;
         Intent intent = new Intent(ChangeProductsActivity.this, ChangeProductDescriptionActivity.class);
         intent.putExtra("currentProductId", currentProductId);
         intent.putExtra("productIdToChange", productIdToChange);
+        intent.putExtra("isMyUser", isMyUser);
+        intent.putExtra("itemPosition", position);
         startActivity(intent);
     }
 }
