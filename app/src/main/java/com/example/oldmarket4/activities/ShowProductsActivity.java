@@ -21,7 +21,7 @@ import java.util.List;
 import model.Product;
 import service.MusicService;
 
-public class ProductsActivity extends BaseActivity {
+public class ShowProductsActivity extends BaseActivity {
     private FirebaseFirestore db;
     private RecyclerView rvProducts;
     private FloatingActionButton fabAdd;
@@ -54,7 +54,6 @@ public class ProductsActivity extends BaseActivity {
                             productList.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Product product = document.toObject(Product.class);
-                                product.setProductId(document.getId());
                                 productList.add(product);
                             }
                             adapter.notifyDataSetChanged();
@@ -71,7 +70,6 @@ public class ProductsActivity extends BaseActivity {
                             productList.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Product product = document.toObject(Product.class);
-                                product.setProductId(document.getId());
                                 productList.add(product);
                             }
                             adapter.notifyDataSetChanged();
@@ -98,7 +96,7 @@ public class ProductsActivity extends BaseActivity {
                 // Handle the long click event
                 Product product = productList.get(position);
                 // Start ProductDescriptionActivity with the product ID
-                Intent intent = new Intent(ProductsActivity.this, ShowProductDescriptionActivity.class);
+                Intent intent = new Intent(ShowProductsActivity.this, ShowProductDescriptionActivity.class);
                 intent.putExtra("productId", product.getProductId());
                 intent.putExtra("isMyUser", isMyUser);
                 startActivity(intent);
@@ -116,7 +114,7 @@ public class ProductsActivity extends BaseActivity {
         fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ProductsActivity.this, AddProductActivity.class);
+                Intent intent = new Intent(ShowProductsActivity.this, AddProductActivity.class);
                 startActivity(intent);
             }
         });
@@ -140,14 +138,14 @@ public class ProductsActivity extends BaseActivity {
         btnStartMusic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startService(new Intent(ProductsActivity.this, MusicService.class));
+                startService(new Intent(ShowProductsActivity.this, MusicService.class));
             }
         });
 
         btnStopMusic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stopService(new Intent(ProductsActivity.this, MusicService.class));
+                stopService(new Intent(ShowProductsActivity.this, MusicService.class));
             }
         });
     }

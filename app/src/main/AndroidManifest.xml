@@ -41,7 +41,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.ProductsActivity"
+            android:name=".activities.ShowProductsActivity"
             android:exported="false" />
         <activity
             android:name=".activities.SignUpActivity"

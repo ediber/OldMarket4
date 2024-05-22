@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.oldmarket4.R;
 
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -53,7 +54,12 @@ public class ChangeActivity extends BaseActivity {
         if(! isMyUser){ // if the original product is not mine the exchange products are mine
             fetchMyProducts();
         }
+        else {
+            fetchOthersProducts(); // fetch products that are offered to me
+        }
     }
+
+
 
     @Override
     protected void InitializeViews() {
@@ -83,7 +89,7 @@ public class ChangeActivity extends BaseActivity {
                             productList.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Product product = document.toObject(Product.class);
-                                product.setProductId(document.getId());
+                                //product.setProductId(document.getId());
                                 productList.add(product);
                             }
                             productAdapter.notifyDataSetChanged();
@@ -93,9 +99,53 @@ public class ChangeActivity extends BaseActivity {
                     });
     }
 
+    private void fetchOthersProducts() {
+        db.collection("products")
+                .whereEqualTo("productId", productId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        DocumentReference docRef = task.getResult().getDocuments().get(0).getReference();
+                        docRef.get().addOnCompleteListener(docTask -> {
+                            if (docTask.isSuccessful() && docTask.getResult() != null) {
+                                List<String> relatedProductIds = (List<String>) docTask.getResult().get("relatedProductIds");
+                                if (relatedProductIds != null && !relatedProductIds.isEmpty()) {
+                                    fetchProductsByIds(relatedProductIds);
+                                } else {
+                                    Toast.makeText(this, "No related products found.", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Log.d("Firestore", "Error getting product details: ", docTask.getException());
+                            }
+                        });
+                    } else {
+                        Log.d("Firestore", "No document found with the specified productId");
+                    }
+                });
+    }
+
+    private void fetchProductsByIds(List<String> productIds) {
+        db.collection("products")
+                .whereIn("productId", productIds)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        productList.clear();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Product product = document.toObject(Product.class);
+                            //product.setProductId(document.getId()); // Manually set the product ID
+                            productList.add(product);
+                        }
+                        productAdapter.notifyDataSetChanged();
+                    } else {
+                        Log.d("Firestore", "Error getting documents: ", task.getException());
+                    }
+                });
+    }
+
     private void addProductToList(String productIdToChange) {
 
-        String currentProductId = getIntent().getStringExtra("productId");
+        String currentProductId = productId;
         Intent intent = new Intent(ChangeActivity.this, ChangeProductDescriptionActivity.class);
         intent.putExtra("currentProductId", currentProductId);
         intent.putExtra("productIdToChange", productIdToChange);

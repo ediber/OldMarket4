@@ -71,49 +71,58 @@ public class ChangeProductDescriptionActivity extends AppCompatActivity {
 
     private void fetchProductDetails() {
         if (productIdToChange != null) {
-            DocumentReference docRef = db.collection("products").document(productIdToChange);
-            docRef.get().addOnCompleteListener(task -> {
-                if (task.isSuccessful() && task.getResult() != null) {
-                    Product product = task.getResult().toObject(Product.class);
-                    if (product != null) {
-                        tvProductName.setText(product.getName());
-                        tvProductDescription.setText(product.getDescription());
-                        tvProductQuantity.setText("Quantity: " + product.getQuantity());
-                        tvProductChange.setText("Change: " + product.getChange());
+            db.collection("products")
+                    .whereEqualTo("productId", productIdToChange)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            Product product = task.getResult().getDocuments().get(0).toObject(Product.class);
+                            if (product != null) {
+                                tvProductName.setText(product.getName());
+                                tvProductDescription.setText(product.getDescription());
+                                tvProductQuantity.setText("Quantity: " + product.getQuantity());
+                                tvProductChange.setText("Change: " + product.getChange());
 
-                        if (product.getImageUrl() != null && !product.getImageUrl().isEmpty()) {
-                            Glide.with(this).load(product.getImageUrl()).into(ivProductImage);
+                                if (product.getImageUrl() != null && !product.getImageUrl().isEmpty()) {
+                                    Glide.with(this).load(product.getImageUrl()).into(ivProductImage);
+                                }
+                            }
+                        } else {
+                            Log.d("Firestore", "Error getting product details: ", task.getException());
                         }
-                    }
-                } else {
-                    Log.d("Firestore", "Error getting product details: ", task.getException());
-                }
-            });
+                    });
         }
     }
 
+
     private void saveProductDetails() {
         if (currentProductId != null && productIdToChange != null) {
-            DocumentReference docRef = db.collection("products").document(currentProductId);
+            db.collection("products")
+                    .whereEqualTo("productId", currentProductId)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            DocumentReference docRef = task.getResult().getDocuments().get(0).getReference();
 
-            // Assuming you have edit text fields or other inputs for these values
-            String newDescription = tvProductDescription.getText().toString(); // Replace with your input field
-            String newQuantity = tvProductQuantity.getText().toString().replace("Quantity: ", ""); // Replace with your input field
-            String newChange = tvProductChange.getText().toString().replace("Change: ", ""); // Replace with your input field
-
-            docRef.update("description", newDescription,
-                            "quantity", newQuantity,
-                            "change", newChange,
-                            "relatedProductIds", FieldValue.arrayUnion(productIdToChange))
-                    .addOnSuccessListener(aVoid -> {
-                        Log.d("Firestore", "Product updated successfully");
-                        Toast.makeText(ChangeProductDescriptionActivity.this, "Product saved successfully!", Toast.LENGTH_SHORT).show();
-                        finish();
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.w("Firestore", "Error updating product", e);
-                        Toast.makeText(ChangeProductDescriptionActivity.this, "Error saving product", Toast.LENGTH_SHORT).show();
+                            updateProductWithRelatedId(docRef);
+                        } else {
+                            Log.d("Firestore", "No document found with the specified productId");
+                            Toast.makeText(ChangeProductDescriptionActivity.this, "No product found with the specified ID.", Toast.LENGTH_SHORT).show();
+                        }
                     });
         }
+    }
+
+    private void updateProductWithRelatedId(DocumentReference docRef) {
+        docRef.update("relatedProductIds", FieldValue.arrayUnion(productIdToChange))
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firestore", "Product updated successfully");
+                    Toast.makeText(ChangeProductDescriptionActivity.this, "Product saved successfully!", Toast.LENGTH_SHORT).show();
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("Firestore", "Error updating product", e);
+                    Toast.makeText(ChangeProductDescriptionActivity.this, "Error saving product", Toast.LENGTH_SHORT).show();
+                });
     }
 }

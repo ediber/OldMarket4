@@ -93,31 +93,34 @@ public class ShowProductDescriptionActivity extends BaseActivity {
     }
 
     private void fetchMyProductDetails(String productId) {
-        DocumentReference docRef = db.collection("products").document(productId);
-        docRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult() != null) {
-                Product product = task.getResult().toObject(Product.class);
-                if (product != null) {
-                    // Set product details to views
-                    tvProductName.setText(product.getName());
-                    tvProductDescription.setText(product.getDescription());
-                    tvProductQuantity.setText("Quantity: " + product.getQuantity());
-                    tvProductChange.setText("Change: " + product.getChange());
+        db.collection("products")
+                .whereEqualTo("productId", productId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        Product product = task.getResult().getDocuments().get(0).toObject(Product.class);
+                        if (product != null) {
+                            // Set product details to views
+                            tvProductName.setText(product.getName());
+                            tvProductDescription.setText(product.getDescription());
+                            tvProductQuantity.setText("Quantity: " + product.getQuantity());
+                            tvProductChange.setText("Change: " + product.getChange());
 
-                    if (isMyUser && product.getPhoneNumber() != null) {
-                        tvPhoneNumber.setText("Phone Number: " + product.getPhoneNumber());
-                    }
+                            if (isMyUser && product.getPhoneNumber() != null) {
+                                tvPhoneNumber.setText("Phone Number: " + product.getPhoneNumber());
+                            }
 
-                    // Load image using Glide
-                    if (product.getImageUrl() != null && !product.getImageUrl().isEmpty()) {
-                        Glide.with(this).load(product.getImageUrl()).into(ivProductImage);
+                            // Load image using Glide
+                            if (product.getImageUrl() != null && !product.getImageUrl().isEmpty()) {
+                                Glide.with(this).load(product.getImageUrl()).into(ivProductImage);
+                            }
+                        }
+                    } else {
+                        Log.d("Firestore", "Error getting product details: ", task.getException());
                     }
-                }
-            } else {
-                Log.d("Firestore", "Error getting product details: ", task.getException());
-            }
-        });
+                });
     }
+
 
     private void addPhoneNumberToProduct() {
         String phoneNumber = etPhoneNumber.getText().toString();

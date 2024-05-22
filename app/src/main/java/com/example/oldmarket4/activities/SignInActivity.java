@@ -1,13 +1,10 @@
 package com.example.oldmarket4.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -51,7 +48,7 @@ public class SignInActivity extends BaseActivity {
             public void onChanged(User user) {
                 if (user != null) {
                     BaseActivity.currentUser = user;
-                    Intent intent = new Intent(SignInActivity.this, ProductsActivity.class);
+                    Intent intent = new Intent(SignInActivity.this, ShowProductsActivity.class);
                     startActivity(intent);
                 }
             }

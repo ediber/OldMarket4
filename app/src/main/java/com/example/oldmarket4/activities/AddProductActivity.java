@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class AddProductActivity extends BaseActivity {
     private ImageView photo;
@@ -138,8 +139,10 @@ public class AddProductActivity extends BaseActivity {
 
     private void saveProductToFirestore(String name, String description, String quantity, String change, String userId, String imageUrl) {
         List<String> relatedProductIds = new ArrayList<>(); // Initialize an empty list
+        String productId = UUID.randomUUID().toString().substring(0, 5); // Generate a random 5-character string
 
         Map<String, Object> product = new HashMap<>();
+        product.put("productId", productId); // Add the productId to the Firestore document
         product.put("name", name);
         product.put("description", description);
         product.put("quantity", quantity);
@@ -154,7 +157,7 @@ public class AddProductActivity extends BaseActivity {
                     Log.d("Firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
                     Toast.makeText(AddProductActivity.this, "Product saved successfully!", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(AddProductActivity.this, ProductsActivity.class);
+                    Intent intent = new Intent(AddProductActivity.this, ShowProductsActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 })
