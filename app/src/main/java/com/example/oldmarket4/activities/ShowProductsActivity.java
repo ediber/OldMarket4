@@ -33,6 +33,7 @@ public class ShowProductsActivity extends BaseActivity {
     private List<Product> productList = new ArrayList<>();
     private boolean isMyUser = false;
     private boolean isDeleteMode = false;
+    private int selectedIndex = -1; // Field to store the index of the selected item
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +82,33 @@ public class ShowProductsActivity extends BaseActivity {
         }
     }
 
+    private void deleteProductById(String productId) {
+        db.collection("products")
+                .whereEqualTo("productId", productId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            db.collection("products").document(document.getId())
+                                    .delete()
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d("Firestore", "DocumentSnapshot successfully deleted!");
+                                        fetchDataByUserId(isMyUser);
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.w("Firestore", "Error deleting document", e);
+                                    });
+                        }
+                    } else {
+                        Log.w("Firestore", "No matching document found for productId: " + productId);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("Firestore", "Error finding document", e);
+                });
+    }
+
+
     @Override
     protected void InitializeViews() {
         rvProducts = findViewById(R.id.rvProducts);
@@ -108,9 +136,10 @@ public class ShowProductsActivity extends BaseActivity {
                     for (Product product : productList) {
                         product.setSelected(false);
                     }
-                    // Select the clicked item
+                    // Select the clicked item and store its index
                     Product product = productList.get(position);
                     product.setSelected(true);
+                    selectedIndex = position;
                     // Notify adapter of the changes
                     adapter.notifyDataSetChanged();
                     btnDelete.setVisibility(View.VISIBLE);
@@ -171,16 +200,18 @@ public class ShowProductsActivity extends BaseActivity {
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle deletion of selected items
-                List<Product> toRemove = new ArrayList<>();
-                for (Product product : productList) {
-                    if (product.isSelected()) {
-                        toRemove.add(product);
-                    }
+                // Handle deletion of the selected item from Firebase Firestore
+                if (selectedIndex != -1) {
+                    Product productToDelete = productList.get(selectedIndex);
+                    deleteProductById(productToDelete.getProductId());
+
+                    // Clear the selection state of products
+                    productList.get(selectedIndex).setSelected(false);
+                    selectedIndex = -1;
+
+                    // Hide the delete button
+                    btnDelete.setVisibility(View.GONE);
                 }
-                productList.removeAll(toRemove);
-                adapter.notifyDataSetChanged();
-                btnDelete.setVisibility(View.GONE);
             }
         });
     }
