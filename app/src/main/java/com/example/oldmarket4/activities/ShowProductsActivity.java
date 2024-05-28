@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.oldmarket4.R;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -29,9 +28,11 @@ public class ShowProductsActivity extends BaseActivity {
     private Button btnFilterNotByUserId;
     private Button btnStartMusic;
     private Button btnStopMusic;
+    private Button btnDelete;
     private ShowProductAdapter adapter;
     private List<Product> productList = new ArrayList<>();
     private boolean isMyUser = false;
+    private boolean isDeleteMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,20 +89,35 @@ public class ShowProductsActivity extends BaseActivity {
         btnFilterNotByUserId = findViewById(R.id.btnFilterNotByUserId);
         btnStartMusic = findViewById(R.id.btnStartMusic);
         btnStopMusic = findViewById(R.id.btnStopMusic);
+        btnDelete = findViewById(R.id.btnDelete); // New delete button
 
-        // Setting up the RecyclerView and Adapter
-        adapter = new ShowProductAdapter(productList, new ShowProductAdapter.OnItemLongClickListener() {
+        adapter = new ShowProductAdapter(productList, new ShowProductAdapter.OnItemClickListener() {
             @Override
-            public void onItemLongClick(int position) {
-                // Handle the long click event
+            public void onItemClick(int position) {
                 Product product = productList.get(position);
-                // Start ProductDescriptionActivity with the product ID
                 Intent intent = new Intent(ShowProductsActivity.this, ShowProductDescriptionActivity.class);
                 intent.putExtra("productId", product.getProductId());
                 intent.putExtra("isMyUser", isMyUser);
                 startActivity(intent);
             }
+
+            @Override
+            public void onItemLongClick(int position) {
+                if (isDeleteMode) {
+                    // Clear selection from all items
+                    for (Product product : productList) {
+                        product.setSelected(false);
+                    }
+                    // Select the clicked item
+                    Product product = productList.get(position);
+                    product.setSelected(true);
+                    // Notify adapter of the changes
+                    adapter.notifyDataSetChanged();
+                    btnDelete.setVisibility(View.VISIBLE);
+                }
+            }
         });
+
         rvProducts.setAdapter(adapter);
         rvProducts.setLayoutManager(new LinearLayoutManager(this));
         rvProducts.setHasFixedSize(true);
@@ -123,6 +139,7 @@ public class ShowProductsActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 isMyUser = true;
+                isDeleteMode = true; // Enable delete mode
                 fetchDataByUserId(true);
             }
         });
@@ -131,7 +148,9 @@ public class ShowProductsActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 isMyUser = false;
+                isDeleteMode = false; // Disable delete mode
                 fetchDataByUserId(false);
+                btnDelete.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -146,6 +165,22 @@ public class ShowProductsActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 stopService(new Intent(ShowProductsActivity.this, MusicService.class));
+            }
+        });
+
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Handle deletion of selected items
+                List<Product> toRemove = new ArrayList<>();
+                for (Product product : productList) {
+                    if (product.isSelected()) {
+                        toRemove.add(product);
+                    }
+                }
+                productList.removeAll(toRemove);
+                adapter.notifyDataSetChanged();
+                btnDelete.setVisibility(View.GONE);
             }
         });
     }

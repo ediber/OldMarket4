@@ -12,6 +12,7 @@ public class Product {
     private String imageUrl; // Optional based on your Firestore structure
     private List<String> phoneNumbersList; // Change to a list of phone numbers
     private List<String> relatedProductIds; // New field for list of product IDs
+    private boolean selected; // Field to handle item selection
 
     public Product() {
         // Firestore Data Model classes need a public no-argument constructor
@@ -72,5 +73,11 @@ public class Product {
     }
     public void setRelatedProductIds(List<String> relatedProductIds) {
         this.relatedProductIds = relatedProductIds;
+    }
+    public boolean isSelected() {
+        return selected;
+    }
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }
