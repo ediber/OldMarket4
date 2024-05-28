@@ -9,8 +9,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -21,6 +19,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FieldValue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import model.Product;
@@ -102,7 +101,6 @@ public class ChangeProductDescriptionActivity extends BaseActivity {
                                 tvProductDescription.setText(product.getDescription());
                                 tvProductQuantity.setText("Quantity: " + product.getQuantity());
                                 tvProductChange.setText("Change: " + product.getChange());
-                                phoneNumbersList = product.getPhoneNumbersList();
 
                                 if (product.getImageUrl() != null && !product.getImageUrl().isEmpty()) {
                                     Glide.with(this).load(product.getImageUrl()).into(ivProductImage);
@@ -128,18 +126,26 @@ public class ChangeProductDescriptionActivity extends BaseActivity {
                     .get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                            DocumentReference docRef = task.getResult().getDocuments().get(0).getReference();
-
-                            updateProductWithRelatedId(docRef);
-                        } else {
-                            Log.d("Firestore", "No document found with the specified productId");
-                            Toast.makeText(ChangeProductDescriptionActivity.this, "No product found with the specified ID.", Toast.LENGTH_SHORT).show();
+                            Product currentProduct = task.getResult().getDocuments().get(0).toObject(Product.class);
+                            if (currentProduct != null) {
+                                DocumentReference docRef = task.getResult().getDocuments().get(0).getReference();
+                                if (currentProduct.getPhoneNumbersList() != null) {
+                                    phoneNumbersList = new ArrayList<>(currentProduct.getPhoneNumbersList());
+                                }
+                                updateProductWithRelatedIdAndPhone(docRef);
+                            } else {
+                                Log.d("Firestore", "No document found with the specified productId");
+                                Toast.makeText(ChangeProductDescriptionActivity.this, "No product found with the specified ID.", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
         }
     }
 
-    private void updateProductWithRelatedId(DocumentReference docRef) {
+    private void updateProductWithRelatedIdAndPhone(DocumentReference docRef) {
+        if (phoneNumbersList == null) {
+            phoneNumbersList = new ArrayList<>();
+        }
         phoneNumbersList.add(currentUser.getPhone());
         docRef.update("relatedProductIds", FieldValue.arrayUnion(productIdToChange),
                         "phoneNumbersList", phoneNumbersList)

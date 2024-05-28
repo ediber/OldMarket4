@@ -19,6 +19,14 @@ public class ShowProductAdapter extends RecyclerView.Adapter<ShowProductAdapter.
     private List<Product> productList;
     private OnItemClickListener clickListener;
 
+    public void setProducts(List<Product> productList) {
+        this.productList = productList;
+    }
+
+    public List<Product> getProducts() {
+        return productList;
+    }
+
     public interface OnItemClickListener {
         void onItemClick(int position);
         void onItemLongClick(int position);
