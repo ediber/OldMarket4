@@ -19,6 +19,7 @@ public class ShowProductAdapter extends RecyclerView.Adapter<ShowProductAdapter.
     private List<Product> productList;
     private OnItemClickListener clickListener;
 
+    // set the products, change data because we switch between our products to not our products
     public void setProducts(List<Product> productList) {
         this.productList = productList;
     }
@@ -32,11 +33,14 @@ public class ShowProductAdapter extends RecyclerView.Adapter<ShowProductAdapter.
         void onItemLongClick(int position);
     }
 
+    // cliclListener is an object of OnItemClickListener interface, which is implemented in MainActivity.
+    // MainActivity calls new on this interface
     public ShowProductAdapter(List<Product> productList, OnItemClickListener clickListener) {
         this.productList = productList;
         this.clickListener = clickListener;
     }
 
+    // create a new view to show from xml, each row has its own view form this xml
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -44,17 +48,23 @@ public class ShowProductAdapter extends RecyclerView.Adapter<ShowProductAdapter.
         return new ProductViewHolder(itemView);
     }
 
+    // bind the data to the view, each row has its own view, called multiple times,
+    // everytime with different position
+    // gets data of relevant product
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         Product product = productList.get(position);
         holder.bind(product);
     }
 
+    // show the number of products
     @Override
     public int getItemCount() {
         return productList.size();
     }
 
+    // responsible for showing the product name and description in a single row
+    // showing information to the users on text views
     class ProductViewHolder extends RecyclerView.ViewHolder {
         TextView tvName, tvDescription;
 

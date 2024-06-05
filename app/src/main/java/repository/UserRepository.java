@@ -64,14 +64,16 @@ public class UserRepository {
         return taskCompletion.getTask();
     }
 
+    // called from the view model
     public Task<User> signIn(String userName, String password){
         TaskCompletionSource<User> taskUser = new TaskCompletionSource<>();
 
-
+        // repository talk to firebase
         collection.whereEqualTo("email", userName).whereEqualTo("password", password).get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        // get result from firebase
                         if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty())
                         {
                             User user = null;
@@ -79,6 +81,7 @@ public class UserRepository {
                                 user = document.toObject(User.class);
                             }
                             taskUser.setResult(user);
+                            // viewmodel can listen to taskUser
                         }
                         else{
                             taskUser.setResult(null);

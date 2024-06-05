@@ -17,6 +17,7 @@ import model.Product;
 
 public class ChangeProductAdapter extends RecyclerView.Adapter<ChangeProductAdapter.ProductViewHolder> {
 
+    // to update activity when user click on a product
     public interface OnItemClickListener {
         void onItemClick(String productId, int position);
     }

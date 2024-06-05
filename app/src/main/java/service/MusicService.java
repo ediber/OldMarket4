@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.example.oldmarket4.R;
 
+// service is an andriod class which is used to play music, we didnt built it
 public class MusicService extends Service {
 
     private static final String TAG = "MusicService";
@@ -22,6 +23,7 @@ public class MusicService extends Service {
         Log.d(TAG, "MusicService created");
     }
 
+    // to start music
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Start playback
@@ -32,6 +34,7 @@ public class MusicService extends Service {
         return START_STICKY;
     }
 
+    // when we want to stop the music
     @Override
     public void onDestroy() {
         super.onDestroy();

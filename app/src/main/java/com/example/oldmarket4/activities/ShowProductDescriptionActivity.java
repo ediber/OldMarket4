@@ -76,6 +76,7 @@ public class ShowProductDescriptionActivity extends BaseActivity {
     }
 
     private void fetchMyProductDetails(String productId) {
+        // Fetch product details from Firestore based on productId
         db.collection("products")
                 .whereEqualTo("productId", productId)
                 .get()

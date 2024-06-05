@@ -50,15 +50,19 @@ public class ChangeProductsActivity extends BaseActivity {
 
         db = FirebaseFirestore.getInstance();
 
+        // if isMyUser is true, i want to see other products that are offered to me
+        // if isMyUser is false, i want to see my products to offer
         isMyUser = getIntent().getBooleanExtra("isMyUser", false); // Retrieve isMyUser
         productId = getIntent().getStringExtra("productId"); // Retrieve productId
 
         // Set header text based on isMyUser
         if (!isMyUser) {
             tvHeader.setText("My Projects to Offer");
+            // if isMyUser is false, i want to see my products to offer
             fetchMyProducts();
         } else {
             tvHeader.setText("Projects Offered to Me");
+            // if isMyUser is true, i want to see other products that are offered to me
             fetchOthersProducts(); // fetch products that are offered to me
         }
     }
@@ -72,6 +76,7 @@ public class ChangeProductsActivity extends BaseActivity {
         productAdapter = new ChangeProductAdapter(productList, new ChangeProductAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(String productId, int position) {
+                // Handle item click event from the adapter
                 goToDescriptionActivity(productId, position);
             }
         });
@@ -84,6 +89,7 @@ public class ChangeProductsActivity extends BaseActivity {
     }
 
     private void fetchMyProducts() {
+        // fetch my products from Firestore
         db.collection("products")
                 .whereEqualTo("userId", currentUser.getIdFs()) // Adjust according to your implementation
                 .get()
@@ -94,6 +100,7 @@ public class ChangeProductsActivity extends BaseActivity {
                             Product product = document.toObject(Product.class);
                             productList.add(product);
                         }
+                        // show the products in recyclerView
                         productAdapter.notifyDataSetChanged();
                     } else {
                         Log.d("Firestore", "Error getting documents: ", task.getException());
@@ -147,6 +154,7 @@ public class ChangeProductsActivity extends BaseActivity {
     private void goToDescriptionActivity(String productIdToChange, int position) {
         String currentProductId = productId;
         Intent intent = new Intent(ChangeProductsActivity.this, ChangeProductDescriptionActivity.class);
+        // Pass the currentProductId and productIdToChange to the next activity, so next activity can use it
         intent.putExtra("currentProductId", currentProductId);
         intent.putExtra("productIdToChange", productIdToChange);
         intent.putExtra("isMyUser", isMyUser);

@@ -24,6 +24,7 @@ import java.util.List;
 
 import model.Product;
 
+// ChangeProductDescriptionActivity extends BaseActivity that extends AppCompatActivity(android)
 public class ChangeProductDescriptionActivity extends BaseActivity {
 
     private FirebaseFirestore db;
@@ -53,8 +54,11 @@ public class ChangeProductDescriptionActivity extends BaseActivity {
         isMyUser = getIntent().getBooleanExtra("isMyUser", false);
         itemPosition = getIntent().getIntExtra("itemPosition", -1); // position of product selected
 
+        // add basic data, put something to be invisibile depending on the user type
         InitializeViews();
-        fetchProductDetails();
+
+        // fetch product details from Firestore
+        fetchProductToChangeDetails();
         setListeners();
     }
 
@@ -68,7 +72,7 @@ public class ChangeProductDescriptionActivity extends BaseActivity {
         btnSaveProduct = findViewById(R.id.btnSaveProduct);
         tvPhoneNumbers = findViewById(R.id.tvPhoneNumbers);
 
-
+        // make one of the text views invisible depending on the user type
         if (isMyUser) {
             btnSaveProduct.setVisibility(View.GONE);
         } else {
@@ -82,14 +86,16 @@ public class ChangeProductDescriptionActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if(! isMyUser){
+                    // if not my user, save need to work
                     saveProductDetails();
                 }
             }
         });
     }
 
-    private void fetchProductDetails() {
+    private void fetchProductToChangeDetails() {
         if (productIdToChange != null) {
+            // Fetch product details from Firestore, by id
             db.collection("products")
                     .whereEqualTo("productId", productIdToChange)
                     .get()
@@ -97,18 +103,21 @@ public class ChangeProductDescriptionActivity extends BaseActivity {
                         if (task.isSuccessful() && !task.getResult().isEmpty()) {
                             Product product = task.getResult().getDocuments().get(0).toObject(Product.class);
                             if (product != null) {
+                                // show details from Firestore
                                 tvProductName.setText(product.getName());
                                 tvProductDescription.setText(product.getDescription());
                                 tvProductQuantity.setText("Quantity: " + product.getQuantity());
                                 tvProductChange.setText("Change: " + product.getChange());
 
+                                // show image from Firestore
+                                // Glide is a library for loading images from URLs into ImageView
                                 if (product.getImageUrl() != null && !product.getImageUrl().isEmpty()) {
                                     Glide.with(this).load(product.getImageUrl()).into(ivProductImage);
                                 }
 
                                 if (isMyUser) {
-                                    String phoneNumber = phoneNumbersList.get(itemPosition);
-                                    tvPhoneNumbers.setText(phoneNumber);
+                                    // if user is my, show phone numbers
+                                    fetchMyProductAndShowPhoneNumber(itemPosition);
                                 }
                             }
                         } else {
@@ -118,9 +127,9 @@ public class ChangeProductDescriptionActivity extends BaseActivity {
         }
     }
 
-
-    private void saveProductDetails() {
+    private void fetchMyProductAndShowPhoneNumber(int itemPosition) {
         if (currentProductId != null && productIdToChange != null) {
+            // Fetch product that is not myne details from Firestore, by id
             db.collection("products")
                     .whereEqualTo("productId", currentProductId)
                     .get()
@@ -130,8 +139,40 @@ public class ChangeProductDescriptionActivity extends BaseActivity {
                             if (currentProduct != null) {
                                 DocumentReference docRef = task.getResult().getDocuments().get(0).getReference();
                                 if (currentProduct.getPhoneNumbersList() != null) {
+                                    // get phone numbers list from Firestore of the other product
                                     phoneNumbersList = new ArrayList<>(currentProduct.getPhoneNumbersList());
                                 }
+                                String phoneNumber = phoneNumbersList.get(itemPosition);
+                                tvPhoneNumbers.setText(phoneNumber);
+                            } else {
+                                Log.d("Firestore", "No document found with the specified productId");
+                                Toast.makeText(ChangeProductDescriptionActivity.this, "No product found with the specified ID.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        }
+
+    }
+
+
+    private void saveProductDetails() {
+        // add current product id to relatedProductIds of other product
+        // add phone number of my user to phoneNumbersList of other product
+        if (currentProductId != null && productIdToChange != null) {
+            // Fetch product that is not myne details from Firestore, by id
+            db.collection("products")
+                    .whereEqualTo("productId", currentProductId)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            Product currentProduct = task.getResult().getDocuments().get(0).toObject(Product.class);
+                            if (currentProduct != null) {
+                                DocumentReference docRef = task.getResult().getDocuments().get(0).getReference();
+                                if (currentProduct.getPhoneNumbersList() != null) {
+                                    // get phone numbers list from Firestore of the other product
+                                    phoneNumbersList = new ArrayList<>(currentProduct.getPhoneNumbersList());
+                                }
+                                // add current product id to relatedProductIds of other product
                                 updateProductWithRelatedIdAndPhone(docRef);
                             } else {
                                 Log.d("Firestore", "No document found with the specified productId");
@@ -146,12 +187,15 @@ public class ChangeProductDescriptionActivity extends BaseActivity {
         if (phoneNumbersList == null) {
             phoneNumbersList = new ArrayList<>();
         }
+        // add my user phone number to phoneNumbersList of other product
         phoneNumbersList.add(currentUser.getPhone());
+        // update new losts of relatedProductIds and phoneNumbersList of other product in Firestore
         docRef.update("relatedProductIds", FieldValue.arrayUnion(productIdToChange),
                         "phoneNumbersList", phoneNumbersList)
                 .addOnSuccessListener(aVoid -> {
                     Log.d("Firestore", "Product updated successfully");
                     Toast.makeText(ChangeProductDescriptionActivity.this, "Product saved successfully!", Toast.LENGTH_SHORT).show();
+                    // finish activity, return to last activity
                     finish();
                 })
                 .addOnFailureListener(e -> {

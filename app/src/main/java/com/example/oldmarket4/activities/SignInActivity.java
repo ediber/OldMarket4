@@ -41,11 +41,15 @@ public class SignInActivity extends BaseActivity {
 
 
     private void setObservers() {
+        // Initialize the ViewModel
         viewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
+        // Observe the LiveData returned by the ViewModel
         viewModel.getMuteUser().observe(this, new Observer<User>() {
             @Override
             public void onChanged(User user) {
+                // this happens when viewmodel has an answer
+                // we go to next activity
                 if (user != null) {
                     BaseActivity.currentUser = user;
                     Intent intent = new Intent(SignInActivity.this, ShowProductsActivity.class);
@@ -62,6 +66,7 @@ public class SignInActivity extends BaseActivity {
         btnKnisa.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
+                                            // Call the ViewModel method to talk to firebase
                                             viewModel.SignIn(etUserName.getText().toString(), etSisma.getText().toString());
                                         }
                                     }

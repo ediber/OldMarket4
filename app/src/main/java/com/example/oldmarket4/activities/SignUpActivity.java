@@ -80,6 +80,7 @@ public class SignUpActivity extends BaseActivity {
                 user.setPassword(etPassword.getText().toString());
                 //........//
 
+                // similar to signin, also activity->viewmodel->repository->firebase
                 viewModel.add(user);
             }
         });

@@ -40,12 +40,16 @@ public class UserViewModel extends AndroidViewModel
                 {successOperation.setValue(false);});
     }
 
+    // SignIn requested from activity
     public void SignIn(String userName, String password){
+        // viewmodel tells repository to sign in
         repository.signIn(userName, password)
                 .addOnSuccessListener(new OnSuccessListener<User>() {
                     @Override
                     public void onSuccess(User user) {
+                        // listen to response from repository
                         muteUser.setValue(user);
+                        // activity can listen to muteUser
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

@@ -48,15 +48,19 @@ public class AddProductActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_product);
 
+        // related to design
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
+
         InitializeViews();
         setListeners();
+        // Initialize Firebase Firestore to store data
         db = FirebaseFirestore.getInstance();
+        // Initialize Firebase Storage to
         storage = FirebaseStorage.getInstance();
     }
 
@@ -75,13 +79,16 @@ public class AddProductActivity extends BaseActivity {
         photo.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+                // Show the options dialog
                 final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(AddProductActivity.this);
                 builder.setTitle("Add Photo!");
                 builder.setItems(options, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
+                        // if user clicked on take photo button in dialog
                         if (options[item].equals("Take Photo")) {
+                            // Open camera to take photo
                             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                             startActivityForResult(intent, 1);
                         } else if (options[item].equals("Choose from Gallery")) {
@@ -122,10 +129,13 @@ public class AddProductActivity extends BaseActivity {
         StorageReference storageRef = storage.getReference();
         StorageReference imagesRef = storageRef.child("images/" + System.currentTimeMillis() + ".jpg");
 
+        // save image in firebase storage
         UploadTask uploadTask = imagesRef.putBytes(imageData);
         uploadTask.addOnSuccessListener(taskSnapshot -> {
             imagesRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                // get the download URL of the uploaded image
                 String imageUrl = uri.toString();
+                // here we save all other details in firestore
                 saveProductToFirestore(name, description, quantity, change, userId, imageUrl);
             }).addOnFailureListener(e -> {
                 Log.w("Firebase", "Error getting download URL", e);
@@ -153,14 +163,16 @@ public class AddProductActivity extends BaseActivity {
         product.put("relatedProductIds", relatedProductIds); // Add the empty list to Firestore
         product.put("phoneNumbersList", phoneNumbersList); // Add the empty list to Firestore
 
+        // save all details in firestore
         db.collection("products")
                 .add(product)
                 .addOnSuccessListener(documentReference -> {
                     Log.d("Firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
                     Toast.makeText(AddProductActivity.this, "Product saved successfully!", Toast.LENGTH_SHORT).show();
 
+                    // on sucess navigate to show products activity
                     Intent intent = new Intent(AddProductActivity.this, ShowProductsActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        //            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 })
                 .addOnFailureListener(e -> {
@@ -169,6 +181,7 @@ public class AddProductActivity extends BaseActivity {
                 });
     }
 
+    // responce from camera or gallery
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -177,6 +190,8 @@ public class AddProductActivity extends BaseActivity {
             if (requestCode == 1 && data != null && data.getExtras() != null) {
                 // Handle camera result
                 Bundle extras = data.getExtras();
+                // Get the Bitmap from the Bundle, save it to our imageview, and display it
+                // imageBitmap is used to save the image in Firebase later in the code
                 imageBitmap = (Bitmap) extras.get("data");
                 photo.setImageBitmap(imageBitmap);
             } else if (requestCode == 2 && data != null) {
